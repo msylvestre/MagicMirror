@@ -1,0 +1,131 @@
+#!/usr/bin/python
+
+# =========================================================
+# Smart Screen
+#
+# - Manage the screen ON/OFF when a person approach closer
+#   than 30 cm of the mirror
+#
+# =========================================================
+
+import RPi.GPIO as GPIO
+import time
+import subprocess
+
+GPIO.setmode(GPIO.BOARD)
+
+# GPIO Pin 
+trig = 38  # sends the signal
+echo = 40  # listens for the signal
+led  = 11  # Light ON when screen ON.
+
+# Pin Init
+GPIO.setup(echo, GPIO.IN)
+GPIO.setup(trig, GPIO.OUT)
+GPIO.setup(led,  GPIO.OUT)
+
+# Global Variable
+DELAY = 5                   # Time to wait before re-reading distance, when the screen switch ON
+
+# ---------------------------------------------------------
+def measure_distance():
+    
+    # Initialize the trigger
+    GPIO.output(trig, True)
+    time.sleep(0.00001)
+    GPIO.output(trig, False)
+
+    
+    while GPIO.input(echo) == 0:        # Loop until echo is 0v 
+        pass   
+
+    start = time.time()                 # reached when echo starts listening  
+
+    while GPIO.input(echo) == 1:        # Loop until echo is 5v, mean the signal came back
+        pass
+
+    end = time.time()                   # reached when the signal arrived
+
+    # Calculate the distance and make sure the reading is valid
+    distance = ((end - start) * 34300) / 2  # 343m/s is the speed of sound
+    #distance = cleanup_noise(distance)
+
+    return distance
+
+
+# ---------------------------------------------------------
+def cleanup_noise(distance):
+
+    if lastDistance == 0:
+        lastDistance = distance
+        return distance
+
+    elif distance > 3000:
+        return lastDistance
+
+    else:
+        lastDistance = distance
+        return distance
+
+
+# ---------------------------------------------------------
+def set_led(state):
+
+    if state == 'ON':
+        GPIO.output(led, True)
+
+    elif state == 'OFF':
+        GPIO.output(led, False)
+
+
+# ---------------------------------------------------------
+def set_display(state, lastHdmiState):
+
+    if state == 'ON' and lastHdmiState == 'OFF':
+        subprocess.call('sh hdmi_on.sh', shell=True)
+        lastHdmiState = 'ON'
+        print "Change HDMI State to ON"
+
+    elif state == 'OFF' and lastHdmiState == 'ON':
+        subprocess.call('sh hdmi_off.sh', shell=True)
+        lastHdmiState = 'OFF'
+        print "Change HDMI State to OFF"
+
+    return lastHdmiState
+
+# =========================================================
+#  MAIN
+# =========================================================
+
+if __name__ == '__main__':  
+
+    try:
+ 
+        lastDistance = 0            # Keep the last distance read by the sonar
+        currentHdmiState = 'ON'
+
+        set_display('OFF', currentHdmiState)
+        set_led('ON')
+
+        while True:
+            distance = measure_distance() 
+            print "distance: %.2f cm" % distance
+            
+            if (distance < 30):
+                currentHdmiState = set_display('ON', currentHdmiState)
+                set_led('ON')
+                print "LED: ON  Waiting %s second of DELAY" % DELAY
+                time.sleep(DELAY)
+                
+            else:
+                currentHdmiState = set_display('OFF', currentHdmiState)
+                set_led('OFF')
+
+            time.sleep(1)            
+    finally:
+        GPIO.cleanup()
+
+
+    
+    
+    
