@@ -83,12 +83,12 @@ def set_led(state):
 def set_display(hdmiState):
 
     if hdmiState == 'ON':
-        subprocess.call('sh hdmi_on.sh', shell=True)
+        subprocess.call('sh hdmi_off.sh', shell=True)
         hdmiNewState = 'OFF'
         print "Change HDMI State to ON"
 
     elif hdmiState == 'OFF':
-        subprocess.call('sh hdmi_off.sh', shell=True)
+        subprocess.call('sh hdmi_on.sh', shell=True)
         hdmiNewState = 'ON'
         print "Change HDMI State to OFF"
 
@@ -107,9 +107,9 @@ if __name__ == '__main__':
     try:
  
         lastDistance = 0            # Keep the last distance read by the sonar
-        currentHdmiState = 'OFF'
+        currentHdmiState = 'ON'
 
-        set_display(currentHdmiState)
+        currentHdmiState = set_display(currentHdmiState)
         set_led('OFF')
 
 
