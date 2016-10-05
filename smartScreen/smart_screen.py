@@ -117,17 +117,19 @@ if __name__ == '__main__':
             distance = measure_distance() 
             print "distance: %.2f cm" % distance
             
-            if distance < 30 and currentHdmiState == 'OFF':
-                set_display('ON')
-                set_led('ON')
-                currentHdmiState = 'ON'
+            if distance < 30:
+                if currentHdmiState == 'OFF':
+                    set_display('ON')
+                    set_led('ON')
+                    currentHdmiState = 'ON'
+                
                 print "LED: ON  Waiting %s second of delay" % DELAY
                 time.sleep(DELAY)
                 
             elif distance > 30 and currentHdmiState == 'ON':
-                    set_display('OFF')
-                    set_led('OFF')
-                    currentHdmiState = 'OFF'
+                set_display('OFF')
+                set_led('OFF')
+                currentHdmiState = 'OFF'
 
             time.sleep(1)            
 
