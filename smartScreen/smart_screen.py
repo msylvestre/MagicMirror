@@ -124,7 +124,7 @@ if __name__ == '__main__':
                 print "LED: ON  Waiting %s second of delay" % DELAY
                 time.sleep(DELAY)
                 
-            elif currentHdmiState == 'ON':
+            elif distance > 30 and currentHdmiState == 'ON':
                     set_display('OFF')
                     set_led('OFF')
                     currentHdmiState = 'OFF'
