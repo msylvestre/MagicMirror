@@ -107,9 +107,10 @@ if __name__ == '__main__':
     try:
  
         lastDistance = 0            # Keep the last distance read by the sonar
-        currentHdmiState = 'ON'
+        currentHdmiState = 'OFF'
 
-        currentHdmiState = set_display(currentHdmiState)
+        print "Init display to OFF"
+        set_display('OFF')
         set_led('OFF')
 
 
@@ -119,14 +120,16 @@ if __name__ == '__main__':
             print "distance: %.2f cm" % distance
             
             if (distance < 30):
-                currentHdmiState = set_display(currentHdmiState)
+                set_display('ON')
                 set_led('ON')
+                currentHdmiState = 'ON'
                 print "LED: ON  Waiting %s second of delay" % DELAY
                 time.sleep(DELAY)
                 
-            else:
-                currentHdmiState = set_display(currentHdmiState)
-                set_led('OFF')
+            elif currentHdmiState == 'ON':
+                    set_display('OFF')
+                    set_led('OFF')
+                    currentHdmiState = 'OFF'
 
             time.sleep(1)            
 
