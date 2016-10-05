@@ -27,6 +27,7 @@ GPIO.setup(led,  GPIO.OUT)
 # Global Variable
 DELAY = 5                   # Time to wait before re-reading distance, when the screen switch ON
 
+
 # ---------------------------------------------------------
 def measure_distance():
     
@@ -79,19 +80,23 @@ def set_led(state):
 
 
 # ---------------------------------------------------------
-def set_display(state, lastHdmiState):
+def set_display(hdmiState):
 
-    if state == 'ON' and lastHdmiState == 'OFF':
+    if hdmiState == 'ON':
         subprocess.call('sh hdmi_on.sh', shell=True)
-        lastHdmiState = 'ON'
+        hdmiNewState = 'OFF'
         print "Change HDMI State to ON"
 
-    elif state == 'OFF' and lastHdmiState == 'ON':
+    elif hdmiState == 'OFF':
         subprocess.call('sh hdmi_off.sh', shell=True)
-        lastHdmiState = 'OFF'
+        hdmiNewState = 'ON'
         print "Change HDMI State to OFF"
 
-    return lastHdmiState
+    return hdmiNewState
+
+
+
+
 
 # =========================================================
 #  MAIN
@@ -102,30 +107,29 @@ if __name__ == '__main__':
     try:
  
         lastDistance = 0            # Keep the last distance read by the sonar
-        currentHdmiState = 'ON'
+        currentHdmiState = 'OFF'
 
-        set_display('OFF', currentHdmiState)
-        set_led('ON')
+        set_display(currentHdmiState)
+        set_led('OFF')
+
 
         while True:
+
             distance = measure_distance() 
             print "distance: %.2f cm" % distance
             
             if (distance < 30):
-                currentHdmiState = set_display('ON', currentHdmiState)
+                currentHdmiState = set_display(currentHdmiState)
                 set_led('ON')
-                print "LED: ON  Waiting %s second of DELAY" % DELAY
+                print "LED: ON  Waiting %s second of delay" % DELAY
                 time.sleep(DELAY)
                 
             else:
-                currentHdmiState = set_display('OFF', currentHdmiState)
+                currentHdmiState = set_display(currentHdmiState)
                 set_led('OFF')
 
             time.sleep(1)            
+
     finally:
         GPIO.cleanup()
-
-
-    
-    
     
