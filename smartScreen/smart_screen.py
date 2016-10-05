@@ -83,16 +83,14 @@ def set_led(state):
 def set_display(hdmiState):
 
     if hdmiState == 'ON':
-        subprocess.call('sh hdmi_off.sh', shell=True)
-        hdmiNewState = 'OFF'
+        subprocess.call('sh hdmi_on.sh', shell=True)
         print "Change HDMI State to ON"
 
     elif hdmiState == 'OFF':
-        subprocess.call('sh hdmi_on.sh', shell=True)
-        hdmiNewState = 'ON'
+        subprocess.call('sh hdmi_off.sh', shell=True)
         print "Change HDMI State to OFF"
 
-    return hdmiNewState
+    return hdmiState
 
 
 
@@ -119,7 +117,7 @@ if __name__ == '__main__':
             distance = measure_distance() 
             print "distance: %.2f cm" % distance
             
-            if (distance < 30):
+            if distance < 30 and currentHdmiState == 'OFF':
                 set_display('ON')
                 set_led('ON')
                 currentHdmiState = 'ON'
