@@ -28,8 +28,75 @@ GPIO.setup(led,  GPIO.OUT)
 DELAY = 5                   # Time to wait before re-reading distance, when the screen switch ON
 
 
+class SignalNoiseCleaner():
+
+    lastDistance == 0
+
+    def avgArray(arr):
+
+        '''
+        totalArr = 0
+        avgArr = 0
+        
+        for i = 0..arr.len:
+            totalArr += arr[0]
+
+        avgArr = totalArr / arr.len
+
+        return avgArr
+
+        '''        
+
+    def shiftArray(arr):
+
+        '''
+
+
+        '''
+
+
+    def cleanNoise(newDistance):
+
+        '''
+        if newDistance > 10% of oldDistance more less than 3 time:
+            retrun oldDistance
+        '''
+
+    def smoothNoise(newDistance):
+
+        '''
+        init array[]
+
+        if array.len <= 2:
+            array[array.len] = newDistance
+            
+            if array.len = 2:
+                distance = avgArray(array) / 3
+            else:
+                distance = -1
+        else:
+            shift(array)
+            array[2] = valueX
+            distance = avgArray(array) / 3
+
+        return distance
+
+        '''
+
+        if lastDistance == 0:
+            lastDistance = distance
+            return distance
+
+        elif distance > 100:
+            return lastDistance
+
+        else:
+            lastDistance = distance
+            return distance
+
+
 # ---------------------------------------------------------
-def measure_distance():
+def measureDistance():
     
     # Initialize the trigger
     GPIO.output(trig, True)
@@ -49,28 +116,18 @@ def measure_distance():
 
     # Calculate the distance and make sure the reading is valid
     distance = ((end - start) * 34300) / 2  # 343m/s is the speed of sound
-    #distance = cleanup_noise(distance)
-
+    
+    # snc = SignalNoiseCleaner() 
+    # distance = snc.cleanupNoise(distance)
+    # distance = snc.smoothSignal(distance)
+ 
     return distance
 
 
-# ---------------------------------------------------------
-def cleanup_noise(distance):
-
-    if lastDistance == 0:
-        lastDistance = distance
-        return distance
-
-    elif distance > 3000:
-        return lastDistance
-
-    else:
-        lastDistance = distance
-        return distance
 
 
 # ---------------------------------------------------------
-def set_led(state):
+def setLed(state):
 
     if state == 'ON':
         GPIO.output(led, True)
@@ -80,7 +137,7 @@ def set_led(state):
 
 
 # ---------------------------------------------------------
-def set_display(hdmiState):
+def setDisplay(hdmiState):
 
     if hdmiState == 'ON':
         subprocess.call('sh hdmi_on.sh', shell=True)
@@ -108,27 +165,27 @@ if __name__ == '__main__':
         currentHdmiState = 'OFF'
 
         print "Init display to OFF"
-        set_display('OFF')
-        set_led('OFF')
+        setDisplay('OFF')
+        setLed('OFF')
 
 
         while True:
 
-            distance = measure_distance() 
+            distance = measureDistance() 
             print "distance: %.2f cm" % distance
             
             if distance < 30:
                 if currentHdmiState == 'OFF':
-                    set_display('ON')
-                    set_led('ON')
+                    setDisplay('ON')
+                    setLed('ON')
                     currentHdmiState = 'ON'
                 
                 print "LED: ON  Waiting %s second of delay" % DELAY
                 time.sleep(DELAY)
                 
             elif distance > 30 and currentHdmiState == 'ON':
-                set_display('OFF')
-                set_led('OFF')
+                setDisplay('OFF')
+                setLed('OFF')
                 currentHdmiState = 'OFF'
 
             time.sleep(1)            
