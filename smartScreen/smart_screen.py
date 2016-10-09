@@ -8,11 +8,11 @@
 #
 # =========================================================
 
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 import subprocess
 
-#GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BOARD)
 
 # GPIO Pin 
 trig = 38  # sends the signal
@@ -20,9 +20,9 @@ echo = 40  # listens for the signal
 led  = 11  # Light ON when screen ON.
 
 # Pin Init
-#GPIO.setup(echo, GPIO.IN)
-#GPIO.setup(trig, GPIO.OUT)
-#GPIO.setup(led,  GPIO.OUT)
+GPIO.setup(echo, GPIO.IN)
+GPIO.setup(trig, GPIO.OUT)
+GPIO.setup(led,  GPIO.OUT)
 
 # Global Variable
 DELAY = 5                   # Time to wait before re-reading distance, when the screen switch ON
@@ -151,12 +151,6 @@ if __name__ == '__main__':
     try:
 
         snc = SignalNoiseCleaner() 
-        print "smoothDistance : ", snc.smoothNoise(15)
-        print "smoothDistance : ", snc.smoothNoise(25)
-        print "smoothDistance : ", snc.smoothNoise(50)
-        print "smoothDistance : ", snc.smoothNoise(50)
-
- 
         
         lastDistance = 0            # Keep the last distance read by the sonar
         currentHdmiState = 'OFF'
@@ -191,5 +185,5 @@ if __name__ == '__main__':
             time.sleep(1)            
             '''
     finally:
-        #GPIO.cleanup()
+        GPIO.cleanup()
         print "time to quit"    
