@@ -11,98 +11,35 @@
 import RPi.GPIO as GPIO
 import time
 import subprocess
+import signalNoiseCleaner as sncModule
+import config
 
 GPIO.setmode(GPIO.BOARD)
 
-# GPIO Pin 
-trig = 38  # sends the signal
-echo = 40  # listens for the signal
-led  = 11  # Light ON when screen ON.
-
 # Pin Init
-GPIO.setup(echo, GPIO.IN)
-GPIO.setup(trig, GPIO.OUT)
-GPIO.setup(led,  GPIO.OUT)
-
-# Global Variable
-DELAY = 5                   # Time to wait before re-reading distance, when the screen switch ON
+GPIO.setup(config.ECHO_PIN, GPIO.IN)
+GPIO.setup(config.TRIGGER_PIN, GPIO.OUT)
+GPIO.setup(config.LED_PIN,  GPIO.OUT)
 
 
-class SignalNoiseCleaner():
 
-    smoothDistance = 0
-    smoothingBuffer = 3
-    arr = []
-
-
-    def avgArray(self, arr):
-        
-        totalArr = 0
-        avgArr   = 0
-        
-        for i in range(len(arr)):
-            totalArr += arr[i]
-
-        avgArr = totalArr / len(arr)
-
-        return avgArr
-
-                
-
-    def shiftArray(self, arr):
-
-        shiftedArr = []
-
-        # Pop out the first value, move the other to the beginning of the array
-        # to make space for a new value
-        for i in range(len(arr) - 1):
-            shiftedArr.append(arr[i + 1])
-
-        return shiftedArr
-
-
-    def cleanNoise(self, newDistance):
-
-        '''
-        if newDistance > 10% of oldDistance more less than 3 time:
-            retrun oldDistance
-        '''
-
-    def smoothNoise(self, newDistance):
-
-        if len(SignalNoiseCleaner.arr) < SignalNoiseCleaner.smoothingBuffer - 1:
-            SignalNoiseCleaner.arr.append(newDistance)
-            SignalNoiseCleaner.smoothDistance = -1
-            
-        else:
-
-            if SignalNoiseCleaner.smoothDistance == -1:
-                SignalNoiseCleaner.arr.append(newDistance)
-                SignalNoiseCleaner.smoothDistance = self.avgArray(SignalNoiseCleaner.arr)
-
-            else:
-                SignalNoiseCleaner.arr = self.shiftArray(SignalNoiseCleaner.arr)
-                SignalNoiseCleaner.arr.append(newDistance)
-                SignalNoiseCleaner.smoothDistance = self.avgArray(SignalNoiseCleaner.arr)
-
-        return SignalNoiseCleaner.smoothDistance
 
 
 # ---------------------------------------------------------
 def measureDistance():
     
-    # Initialize the trigger
-    GPIO.output(trig, True)
+    # Initialize the TRIGGER_PINger
+    GPIO.output(config.TRIGGER_PIN, True)
     time.sleep(0.00001)
-    GPIO.output(trig, False)
+    GPIO.output(config.TRIGGER_PIN, False)
 
     
-    while GPIO.input(echo) == 0:        # Loop until echo is 0v 
+    while GPIO.input(config.ECHO_PIN) == 0:        # Loop until ECHO_PIN is 0v 
         pass   
 
-    start = time.time()                 # reached when echo starts listening  
+    start = time.time()                 # reached when ECHO_PIN starts listening  
 
-    while GPIO.input(echo) == 1:        # Loop until echo is 5v, mean the signal came back
+    while GPIO.input(config.ECHO_PIN) == 1:        # Loop until ECHO_PIN is 5v, mean the signal came back
         pass
 
     end = time.time()                   # reached when the signal arrived
@@ -114,15 +51,14 @@ def measureDistance():
 
 
 
-
 # ---------------------------------------------------------
 def setLed(state):
 
     if state == 'ON':
-        GPIO.output(led, True)
+        GPIO.output(config.LED_PIN, True)
 
     elif state == 'OFF':
-        GPIO.output(led, False)
+        GPIO.output(config.LED_PIN, False)
 
 
 # ---------------------------------------------------------
@@ -150,40 +86,47 @@ if __name__ == '__main__':
 
     try:
 
-        snc = SignalNoiseCleaner() 
+        snc = sncModule.SignalNoiseCleaner() 
         
-        lastDistance = 0            # Keep the last distance read by the sonar
         currentHdmiState = 'OFF'
 
         print "Init display to OFF"
-        setDisplay('ON')
-        setLed('ON')
+        setDisplay('OFF')
+        setLed('OFF')
 
 
         while True:
 
-            #distance = snc.smoothNoise(measureDistance())
+            
             distance = measureDistance() 
-            print "distance: %.2f cm" % distance
-            time.sleep(2)
-        
-            '''    
-            if distance < 30:
-                if currentHdmiState == 'OFF':
-                    setDisplay('ON')
-                    setLed('ON')
-                    currentHdmiState = 'ON'
-                
-                print "LED: ON  Waiting %s second of delay" % DELAY
-                time.sleep(DELAY)
-                
-            elif distance > 30 and currentHdmiState == 'ON':
-                setDisplay('OFF')
-                setLed('OFF')
-                currentHdmiState = 'OFF'
+            cleanDistance = snc.cleanNoise(distance)
+            
+            #smoothDistance = snc.smoothNoise(distance)
+            smoothDistance = cleanDistance
 
-            time.sleep(1)            
-            '''
+            print "Mesured Distance : %.2f cm" % distance
+            print "Clean Distance  : %.2f cm" % cleanDistance
+            print "Smooth Distance  : %.2f cm" % smoothDistance
+            print "---------------------------------------------"
+            
+            if smoothDistance != -1:    # Check the smoothing is initialized (need 3 value minimum)
+               
+                if smoothDistance < config.USER_DISTANCE:
+                    if currentHdmiState == 'OFF':
+                        setDisplay('ON')
+                        setLed('ON')
+                        currentHdmiState = 'ON'
+                    
+                    print "LED: ON  Waiting %s second of delay" % config.ENABLE_DELAY
+                    time.sleep(config.ENABLE_DELAY)
+                    
+                elif smoothDistance > 30 and currentHdmiState == 'ON':
+                    setDisplay('OFF')
+                    setLed('OFF')
+                    currentHdmiState = 'OFF'
+
+            time.sleep(config.READ_DELAY)            
+            
     finally:
         GPIO.cleanup()
         print "time to quit"    
