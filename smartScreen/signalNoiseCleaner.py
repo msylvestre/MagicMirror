@@ -1,4 +1,5 @@
 #!/usr/bin/python
+
 class SignalNoiseCleaner():
 
     smoothingBuffer = 3
@@ -9,7 +10,7 @@ class SignalNoiseCleaner():
     maxPeak         = 3
     arr             = []
 
-
+    #--------------------------------------------------------------------------------
     def avgArray(self, arr):
         
         totalArr = 0
@@ -23,6 +24,7 @@ class SignalNoiseCleaner():
         return avgArr
 
                 
+    #--------------------------------------------------------------------------------
     def shiftArray(self, arr):
 
         shiftedArr = []
@@ -35,6 +37,7 @@ class SignalNoiseCleaner():
         return shiftedArr
 
 
+    #--------------------------------------------------------------------------------
     def cleanNoise(self, newDistance):
 
         maxDistanceAllowed = SignalNoiseCleaner.cleanDistance * (1 + SignalNoiseCleaner.peakSize)
@@ -63,10 +66,10 @@ class SignalNoiseCleaner():
             SignalNoiseCleaner.cleanDistance = newDistance
             SignalNoiseCleaner.peakCounter = 0
 
-
         return SignalNoiseCleaner.cleanDistance
 
 
+    #--------------------------------------------------------------------------------
     def smoothNoise(self, newDistance):
 
         if len(SignalNoiseCleaner.arr) < SignalNoiseCleaner.smoothingBuffer - 1:
