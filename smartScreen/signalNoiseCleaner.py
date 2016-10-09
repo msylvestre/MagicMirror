@@ -37,14 +37,18 @@ class SignalNoiseCleaner():
 
     def cleanNoise(self, newDistance):
 
+        maxDistanceAllowed = SignalNoiseCleaner.cleanDistance * (1 + SignalNoiseCleaner.peakSize)
+        minDistanceAllowed = SignalNoiseCleaner.cleanDistance * (1 - SignalNoiseCleaner.peakSize)
+        
+        # If it's the first read
         if SignalNoiseCleaner.cleanDistance == -1:
             SignalNoiseCleaner.cleanDistance = newDistance
 
-        elif newDistance > (SignalNoiseCleaner.cleanDistance * (1 + SignalNoiseCleaner.peakSize)) or newDistance < (SignalNoiseCleaner.cleanDistance * (1 - SignalNoiseCleaner.peakSize)):
-            
-            # If newDistance is bigger then 25% or smaller than 25%, we have a peak !
+        # If newDistance is bigger/smaller than 25% of the last read, we have a peak !
+        elif newDistance > maxDistanceAllow or newDistance < minDistanceAllowed:
             
             if SignalNoiseCleaner.peakCounter < SignalNoiseCleaner.maxPeak:
+                # Increase the peak counter
                 SignalNoiseCleaner.peakCounter += 1
                 print "peak ! -> ", SignalNoiseCleaner.peakCounter
 
