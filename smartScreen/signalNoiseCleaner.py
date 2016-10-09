@@ -6,7 +6,7 @@ class SignalNoiseCleaner():
     smoothDistance  = -1
     cleanDistance   = -1
     peakCounter     = 0
-    peakSize        = 0.25
+    peakSize        = 0.50
     maxPeak         = 3
     arr             = []
 
@@ -48,7 +48,7 @@ class SignalNoiseCleaner():
             SignalNoiseCleaner.cleanDistance = newDistance
 
         # If newDistance is bigger/smaller than 25% of the last read, we have a peak !
-        elif newDistance > maxDistanceAllow or newDistance < minDistanceAllowed:
+        elif newDistance > maxDistanceAllowed or newDistance < minDistanceAllowed:
             
             if SignalNoiseCleaner.peakCounter < SignalNoiseCleaner.maxPeak:
                 # Increase the peak counter
