@@ -8,11 +8,11 @@
 #
 # =========================================================
 
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 import time
 import subprocess
 
-GPIO.setmode(GPIO.BOARD)
+#GPIO.setmode(GPIO.BOARD)
 
 # GPIO Pin 
 trig = 38  # sends the signal
@@ -20,9 +20,9 @@ echo = 40  # listens for the signal
 led  = 11  # Light ON when screen ON.
 
 # Pin Init
-GPIO.setup(echo, GPIO.IN)
-GPIO.setup(trig, GPIO.OUT)
-GPIO.setup(led,  GPIO.OUT)
+#GPIO.setup(echo, GPIO.IN)
+#GPIO.setup(trig, GPIO.OUT)
+#GPIO.setup(led,  GPIO.OUT)
 
 # Global Variable
 DELAY = 5                   # Time to wait before re-reading distance, when the screen switch ON
@@ -30,69 +30,62 @@ DELAY = 5                   # Time to wait before re-reading distance, when the 
 
 class SignalNoiseCleaner():
 
-    lastDistance == 0
+    smoothDistance = 0
+    smoothingBuffer = 3
+    arr = []
 
-    def avgArray(arr):
 
-        '''
-        totalArr = 0
-        avgArr = 0
+    def avgArray(self, arr):
         
-        for i = 0..arr.len:
-            totalArr += arr[0]
+        totalArr = 0
+        avgArr   = 0
+        
+        for i in range(len(arr)):
+            totalArr += arr[i]
 
-        avgArr = totalArr / arr.len
+        avgArr = totalArr / len(arr)
 
         return avgArr
 
-        '''        
+                
 
-    def shiftArray(arr):
+    def shiftArray(self, arr):
 
-        '''
+        shiftedArr = []
+
+        # Pop out the first value, move the other to the beginning of the array
+        # to make space for a new value
+        for i in range(len(arr) - 1):
+            shiftedArr.append(arr[i + 1])
+
+        return shiftedArr
 
 
-        '''
-
-
-    def cleanNoise(newDistance):
+    def cleanNoise(self, newDistance):
 
         '''
         if newDistance > 10% of oldDistance more less than 3 time:
             retrun oldDistance
         '''
 
-    def smoothNoise(newDistance):
+    def smoothNoise(self, newDistance):
 
-        '''
-        init array[]
-
-        if array.len <= 2:
-            array[array.len] = newDistance
+        if len(SignalNoiseCleaner.arr) < SignalNoiseCleaner.smoothingBuffer - 1:
+            SignalNoiseCleaner.arr.append(newDistance)
+            SignalNoiseCleaner.smoothDistance = -1
             
-            if array.len = 2:
-                distance = avgArray(array) / 3
+        else:
+
+            if SignalNoiseCleaner.smoothDistance == -1:
+                SignalNoiseCleaner.arr.append(newDistance)
+                SignalNoiseCleaner.smoothDistance = self.avgArray(SignalNoiseCleaner.arr)
+
             else:
-                distance = -1
-        else:
-            shift(array)
-            array[2] = valueX
-            distance = avgArray(array) / 3
+                SignalNoiseCleaner.arr = self.shiftArray(SignalNoiseCleaner.arr)
+                SignalNoiseCleaner.arr.append(newDistance)
+                SignalNoiseCleaner.smoothDistance = self.avgArray(SignalNoiseCleaner.arr)
 
-        return distance
-
-        '''
-
-        if lastDistance == 0:
-            lastDistance = distance
-            return distance
-
-        elif distance > 100:
-            return lastDistance
-
-        else:
-            lastDistance = distance
-            return distance
+        return SignalNoiseCleaner.smoothDistance
 
 
 # ---------------------------------------------------------
@@ -117,10 +110,6 @@ def measureDistance():
     # Calculate the distance and make sure the reading is valid
     distance = ((end - start) * 34300) / 2  # 343m/s is the speed of sound
     
-    # snc = SignalNoiseCleaner() 
-    # distance = snc.cleanupNoise(distance)
-    # distance = snc.smoothSignal(distance)
- 
     return distance
 
 
@@ -160,20 +149,31 @@ def setDisplay(hdmiState):
 if __name__ == '__main__':  
 
     try:
+
+        snc = SignalNoiseCleaner() 
+        print "smoothDistance : ", snc.smoothNoise(15)
+        print "smoothDistance : ", snc.smoothNoise(25)
+        print "smoothDistance : ", snc.smoothNoise(50)
+        print "smoothDistance : ", snc.smoothNoise(50)
+
  
+        
         lastDistance = 0            # Keep the last distance read by the sonar
         currentHdmiState = 'OFF'
 
         print "Init display to OFF"
-        setDisplay('OFF')
-        setLed('OFF')
+        setDisplay('ON')
+        setLed('ON')
 
 
         while True:
 
+            #distance = snc.smoothNoise(measureDistance())
             distance = measureDistance() 
             print "distance: %.2f cm" % distance
-            
+            time.sleep(2)
+        
+            '''    
             if distance < 30:
                 if currentHdmiState == 'OFF':
                     setDisplay('ON')
@@ -189,7 +189,7 @@ if __name__ == '__main__':
                 currentHdmiState = 'OFF'
 
             time.sleep(1)            
-
+            '''
     finally:
-        GPIO.cleanup()
-    
+        #GPIO.cleanup()
+        print "time to quit"    
