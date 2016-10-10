@@ -1,6 +1,6 @@
-cd ~/Rasp/MagicMirror
+#!/bin/bash
+cd /home/pi/MagicMirror
 git pull origin master
-npm start
+DISPLAY=:0 npm start
 
-#The access point /org/freedesktop/NetworkManager/AccessPoint/1142 was not in the scan list.
-#sudo service network-manager restart
+# To set the file as executable : $ chmod +x mm.sh
