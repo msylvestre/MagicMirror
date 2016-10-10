@@ -62,11 +62,11 @@ def setLed(state):
 def setDisplay(hdmiState):
 
     if hdmiState == 'ON':
-        subprocess.call('sh hdmi_on.sh', shell=True)
+        subprocess.call('sh /home/pi/MagicMirror/smartScreen/hdmi_on.sh', shell=True)
         print "Change HDMI State to ON"
 
     elif hdmiState == 'OFF':
-        subprocess.call('sh hdmi_off.sh', shell=True)
+        subprocess.call('sh /home/pi/MagicMirror/smartScreen/hdmi_off.sh', shell=True)
         print "Change HDMI State to OFF"
 
     return hdmiState
