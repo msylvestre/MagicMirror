@@ -1,0 +1,262 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Magicmirror by msylvestre</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/msylvestre/MagicMirror">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/msylvestre/MagicMirror/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/msylvestre/MagicMirror/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Magicmirror</h1>
+          <p>MagicMirror²</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/msylvestre">msylvestre</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <p><img src=".github/header.png" alt="MagicMirror²: The open source modular smart mirror platform. "></p>
+
+<p align="center">
+    <a href="https://david-dm.org/MichMich/MagicMirror"><img src="https://david-dm.org/MichMich/MagicMirror.svg" alt="Dependency Status"></a>
+    <a href="https://david-dm.org/MichMich/MagicMirror#info=devDependencies"><img src="https://david-dm.org/MichMich/MagicMirror/dev-status.svg" alt="devDependency Status"></a>
+    <a href="https://bestpractices.coreinfrastructure.org/projects/347"><img src="https://bestpractices.coreinfrastructure.org/projects/347/badge"></a>
+    <a href="http://choosealicense.com/licenses/mit"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+    <a href="https://travis-ci.org/MichMich/MagicMirror"><img src="https://travis-ci.org/MichMich/MagicMirror.svg" alt="Travis"></a>
+    <a href="https://snyk.io/test/github/MichMich/MagicMirror"><img src="https://snyk.io/test/github/MichMich/MagicMirror/badge.svg" alt="Known Vulnerabilities"></a>
+</p>
+
+<p><strong>MagicMirror²</strong> is an open source modular smart mirror platform. With a growing list of installable modules, the <strong>MagicMirror²</strong> allows you to convert your hallway or bathroom mirror into your personal assistant. <strong>MagicMirror²</strong> is built by the creator of <a href="http://michaelteeuw.nl/tagged/magicmirror">the original MagicMirror</a> with the incredible help of a <a href="https://github.com/MichMich/MagicMirror/graphs/contributors">growing community of contributors</a>.</p>
+
+<p>MagicMirror² focuses on a modular plugin system and uses <a href="http://electron.atom.io/">Electron</a> as an application wrapper. So no more web server or browser installs necessary!</p>
+
+<h2>
+<a id="table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Table Of Contents</h2>
+
+<ul>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#configuration">Configuration</a></li>
+<li><a href="#modules">Modules</a></li>
+<li><a href="#known-issues">Known Issues</a></li>
+<li><a href="#community">community</a></li>
+<li><a href="#contributing-guidelines">Contributing Guidelines</a></li>
+</ul>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a id="raspberry-pi-support" class="anchor" href="#raspberry-pi-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Raspberry Pi Support</h3>
+
+<p>Electron, the app wrapper around MagicMirror², only supports the Raspberry Pi 2 &amp; 3. The Raspberry Pi 1 is currently <strong>not</strong> supported. If you want to run this on a Raspberry Pi 1, use the <a href="#server-only">server only</a> feature and setup a fullscreen browser yourself.</p>
+
+<h3>
+<a id="automatic-installer-raspberry-pi-only" class="anchor" href="#automatic-installer-raspberry-pi-only" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Automatic Installer (Raspberry Pi Only!)</h3>
+
+<p>Execute the following command on your Raspberry Pi to install MagicMirror²:</p>
+
+<pre><code>curl -sL https://raw.githubusercontent.com/MichMich/MagicMirror/master/installers/raspberry.sh | bash
+</code></pre>
+
+<h3>
+<a id="manual-installation" class="anchor" href="#manual-installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Manual Installation</h3>
+
+<ol>
+<li>Download and install the latest Node.js version.</li>
+<li>Clone the repository and check out the beta branch: <code>git clone https://github.com/MichMich/MagicMirror</code>
+</li>
+<li>Enter the repository: <code>cd ~/MagicMirror</code>
+</li>
+<li>Install and run the app: <code>npm install &amp;&amp; npm start</code>
+</li>
+</ol>
+
+<p><strong>Important:</strong> <code>npm start</code> does <strong>not</strong> work via SSH, use <code>DISPLAY=:0 nohup npm start &amp;</code> instead. This starts the mirror on the remote display.</p>
+
+<p><strong>Note:</strong> if you want to debug on Raspberry Pi you can use <code>npm start dev</code> which will start the MagicMirror app with Dev Tools enabled.</p>
+
+<h3>
+<a id="server-only" class="anchor" href="#server-only" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Server Only</h3>
+
+<p>In some cases, you want to start the application without an actual app window. In this case, execute the following command from the MagicMirror folder: <code>node serveronly</code>. This will start the server, after which you can open the application in your browser of choice.</p>
+
+<h3>
+<a id="raspberry-configuration--auto-start" class="anchor" href="#raspberry-configuration--auto-start" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Raspberry Configuration &amp; Auto Start.</h3>
+
+<p>The following wiki links are helpful in the configuration of your MagicMirror² operating system:</p>
+
+<ul>
+<li><a href="https://github.com/MichMich/MagicMirror/wiki/Configuring-the-Raspberry-Pi">Configuring the Raspberry Pi</a></li>
+<li><a href="https://github.com/MichMich/MagicMirror/wiki/Auto-Starting-MagicMirror">Auto Starting MagicMirror</a></li>
+</ul>
+
+<h3>
+<a id="updating-your-magicmirror" class="anchor" href="#updating-your-magicmirror" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Updating your MagicMirror²</h3>
+
+<p>If you want to update your MagicMirror² to the latest version, use your terminal to go to your Magic Mirror folder and type the following command:</p>
+
+<div class="highlight highlight-source-shell"><pre>git pull</pre></div>
+
+<p>If you changed nothing more than the config or the modules, this should work without any problems.
+Type <code>git status</code> to see your changes, if there are any, you can reset them with <code>git reset --hard</code>. After that, git pull should be possible.</p>
+
+<h2>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configuration</h2>
+
+<ol>
+<li>Duplicate <code>config/config.js.sample</code> to <code>config/config.js</code>.</li>
+<li>Modify your required settings.</li>
+</ol>
+
+<p>The following properties can be configured:</p>
+
+<table>
+<thead>
+<tr>
+<th><strong>Option</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>port</code></td>
+<td>The port on which the MagicMirror² server will run on. The default value is <code>8080</code>.</td>
+</tr>
+<tr>
+<td><code>kioskmode</code></td>
+<td>This allows MagicMirror² to run in Kiosk Mode. It protects from other programs popping on top of your screen. The default value is <code>false</code>
+</td>
+</tr>
+<tr>
+<td><code>language</code></td>
+<td>The language of the interface. (Note: Not all elements will be localized.) Possible values are <code>en</code>, <code>nl</code>, <code>ru</code>, <code>fr</code>, etc., but the default value is <code>en</code>.</td>
+</tr>
+<tr>
+<td><code>timeFormat</code></td>
+<td>The form of time notation that will be used. Possible values are <code>12</code> or <code>24</code>. The default is <code>24</code>.</td>
+</tr>
+<tr>
+<td><code>units</code></td>
+<td>The units that will be used in the default weather modules. Possible values are <code>metric</code> or <code>imperial</code>. The default is <code>metric</code>.</td>
+</tr>
+<tr>
+<td><code>modules</code></td>
+<td>An array of active modules. <strong>The array must contain objects. See the next table below for more information.</strong>
+</td>
+</tr>
+</tbody>
+</table>
+
+<p>Module configuration:</p>
+
+<table>
+<thead>
+<tr>
+<th><strong>Option</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>module</code></td>
+<td>The name of the module. This can also contain the subfolder. Valid examples include <code>clock</code>, <code>default/calendar</code> and <code>custommodules/mymodule</code>.</td>
+</tr>
+<tr>
+<td><code>position</code></td>
+<td>The location of the module in which the module will be loaded. Possible values are <code>top_ bar</code>, <code>top_left</code>, <code>top_center</code>, <code>top_right</code>, <code>upper_third</code>, <code>middle_center</code>, <code>lower_third</code>, <code>bottom_left</code>, <code>bottom_center</code>, <code>bottom_right</code>, <code>bottom_bar</code>, <code>fullscreen_above</code>, and <code>fullscreen_below</code>. This field is optional but most modules require this field to set. Check the documentation of the module for more information. Multiple modules with the same position will be ordered based on the order in the configuration file.</td>
+</tr>
+<tr>
+<td><code>classes</code></td>
+<td>Additional classes which are passed to the module. The field is optional.</td>
+</tr>
+<tr>
+<td><code>header</code></td>
+<td>To display a header text above the module, add the header property. This field is optional.</td>
+</tr>
+<tr>
+<td><code>config</code></td>
+<td>An object with the module configuration properties. Check the documentation of the module for more information. This field is optional, unless the module requires extra configuration.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="modules" class="anchor" href="#modules" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Modules</h2>
+
+<p>The following modules are installed by default.</p>
+
+<ul>
+<li><a href="modules/default/clock"><strong>Clock</strong></a></li>
+<li><a href="modules/default/calendar"><strong>Calendar</strong></a></li>
+<li><a href="modules/default/currentweather"><strong>Current Weather</strong></a></li>
+<li><a href="modules/default/weatherforecast"><strong>Weather Forecast</strong></a></li>
+<li><a href="modules/default/newsfeed"><strong>News Feed</strong></a></li>
+<li><a href="modules/default/compliments"><strong>Compliments</strong></a></li>
+<li><a href="modules/default/helloworld"><strong>Hello World</strong></a></li>
+<li><a href="modules/default/alert"><strong>Alert</strong></a></li>
+</ul>
+
+<p>For more available modules, check out out the wiki page: <a href="https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules">MagicMirror² Modules</a>. If you want to build your own modules, check out the <a href="modules">MagicMirror² Module Development Documentation</a> and don't forget to add it to the wiki and the <a href="https://forum.magicmirror.builders/category/7/showcase">forum</a>!</p>
+
+<h2>
+<a id="known-issues" class="anchor" href="#known-issues" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Known issues</h2>
+
+<ul>
+<li>Electron seems to have some issues on certain Raspberry Pi 2's. See <a href="https://github.com/MichMich/MagicMirror/issues/145">#145</a>.</li>
+<li>MagicMirror² (Electron) sometimes quits without an error after an extended period of use. See <a href="https://github.com/MichMich/MagicMirror/issues/150">#150</a>.</li>
+</ul>
+
+<h2>
+<a id="community" class="anchor" href="#community" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Community</h2>
+
+<p>The community around the MagicMirror² is constantly growing. We even have a <a href="https://forum.magicmirror.builders">forum</a> now where you can share your ideas, ask questions, help others and get inspired by other builders. We would love to see you there!</p>
+
+<h2>
+<a id="contributing-guidelines" class="anchor" href="#contributing-guidelines" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributing Guidelines</h2>
+
+<p>Contributions of all kinds are welcome, not only in the form of code but also with regards bug reports and documentation.</p>
+
+<p>Please keep the following in mind:</p>
+
+<ul>
+<li>
+<strong>Bug Reports</strong>:  Make sure you're running the latest version. If the issue(s) still persist: please open a clearly documented issue with a clear title.</li>
+<li>
+<strong>Minor Bug Fixes</strong>: Please send a pull request with a clear explanation of the issue or a link to the issue it solves.</li>
+<li>
+<strong>Major Bug Fixes</strong>: please discuss your approach in an GitHub issue before you start to alter a big part of the code.</li>
+<li>
+<strong>New Features</strong>: please please discuss in a GitHub issue before you start to alter a big part of the code. Without discussion upfront, the pull request will not be accepted / merged.</li>
+</ul>
+
+<p>Thanks for your help in making MagicMirror² better!</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
